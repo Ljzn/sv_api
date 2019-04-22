@@ -19,7 +19,7 @@ defmodule SvApi.BitindexTest do
   @addr "1QL7Qbed9X4qfs89bxyKwqwCV9fioGW4Hg"
 
   test "addrs utxos" do
-    assert utxos = Bitindex.utxos(@addr)
+    assert {:ok, utxos} = Bitindex.utxos(@addr)
     assert Enum.all?(utxos, &is_utxo/1)
   end
 end

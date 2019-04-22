@@ -11,9 +11,9 @@ defmodule SvApi.Bitindex do
   def utxos(addr) do
     case get("addrs/utxos?address=#{addr}") do
       {:ok, resp} ->
-        Map.get(resp.body, "data")
+        {:ok, Map.get(resp.body, "data")}
       {:error, msg} ->
-        raise(msg)
+        {:error, msg}
     end
   end
 
