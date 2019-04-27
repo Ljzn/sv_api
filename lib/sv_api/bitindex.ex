@@ -20,7 +20,13 @@ defmodule SvApi.Bitindex do
   def broadcast(tx) do
     case post("/tx/send", %{hex: tx}) do
       {:ok, resp} ->
-        {:ok, Map.get(resp.body, "message")}
+        msg = case Map.get(resp.body, "message") do
+          nil ->
+            Map.get(resp.body, "txid")
+          other ->
+            other
+        end
+        {:ok, msg}
       {:error, msg} ->
         {:error, msg}
     end
