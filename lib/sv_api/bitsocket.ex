@@ -10,10 +10,11 @@ defmodule SvApi.Bitsocket do
     b64 = build_query(addr)
     {:ok, pid} = SseClient.new("https://genesis.bitdb.network/s/1FnauZ9aUH2Bex6JzdcV4eNX7oLSSEbxtN/" <> b64, stream_to: self())
     ref = Process.monitor(pid)
-    do_listen(parent, addr, ref)
+    ref2 = Process.monitor(parent)
+    do_listen(parent, addr, ref, ref2)
   end
 
-  defp do_listen(parent, addr, ref) do
+  defp do_listen(parent, addr, ref, ref2) do
     receive do
       %EventsourceEx.Message{data: data} ->
         case parse_data(data) do
@@ -22,12 +23,14 @@ defmodule SvApi.Bitsocket do
           _ ->
             nil
         end
-        do_listen(parent, addr, ref)
+        do_listen(parent, addr, ref, ref2)
       {:DOWN, ^ref, _, _pid, _} ->
         start_sse(parent, addr)
+      {:DOWN, ^ref2, _, _pid, _} ->
+        :stop
       other ->
         IO.inspect other, label: "bitsocket"
-        do_listen(parent, addr, ref)
+        do_listen(parent, addr, ref, ref2)
     end
   end
 
