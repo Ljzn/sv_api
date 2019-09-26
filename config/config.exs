@@ -21,6 +21,9 @@ use Mix.Config
 #     config :logger, level: :info
 #
 
+# Configures SvApi, only for developing
+config :sv_api, mods: [SvApi.Bitindex]
+config :sv_api, bitindex_api_key: "44UFrLxSBgPxt4mibqw9m9voHps7RbgT1j92YE1K7XUKefBPLMiPXq7e5Lrmpp8NWa"
 
 # It is also possible to import configuration files, relative to this
 # directory. For example, you can emulate configuration per environment

@@ -4,7 +4,7 @@ defmodule SvApi do
   """
   alias SvApi.Bitindex
 
-  @mods Application.get_env(:sv_api, :mods) |> IO.inspect()
+  @mods Application.get_env(:sv_api, :mods)
 
 
   def utxos(addr) do
