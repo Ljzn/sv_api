@@ -7,33 +7,22 @@ Elixir SDK for multiple third-party BitcoinSV apis.
 ```elixir
 def deps do
   [
-    {:sv_api, github: "0xwallet/sv_api"}
+    {:sv_api, github: "terriblecodebutwork/sv_api"}
   ]
 end
 ```
 
-## Example
+## Apis
 
-**Bitindex api: get utxos for address**
-
-```elixir
-SvApi.Bitindex.utxos("1L9D9Zv9BFqTQScFJzz8rXiUjnmnGxRBvk")
+set the api module and api key in your config file:
+```exs
+config :sv_api, mods: [SvApi.Bitindex]
+config :sv_api, bitindex_api_key: "" #your api key
 ```
 
-will get
+supported:
 ```ex
- [
-    %{
-      "address" => "1L9D9Zv9BFqTQScFJzz8rXiUjnmnGxRBvk",
-      "amount" => 8.88e-6,
-      "confirmations" => 4393,
-      "height" => 574803,
-      "satoshis" => 888,
-      "scriptPubKey" => "76a914d1f7dba524ba2be249981eda3e472170a6e1c3a988ac",
-      "txid" => "db2f3a28b1d9591988ad3e473571ed2bf187efd520b31aafa3c7694de1bd5979",
-      "value" => 888,
-      "vout" => 1
-    },
-    ...
-  ]
+SvApi.broadcast(tx) # hex string raw tx
+SvApi.transaction(txid) # get raw tx with txid
+SvApi.utxos(addr) # get utxos with address
 ```

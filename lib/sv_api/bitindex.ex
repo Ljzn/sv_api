@@ -1,32 +1,49 @@
 defmodule SvApi.Bitindex do
   use Tesla
 
-  @api_key "44UFrLxSBgPxt4mibqw9m9voHps7RbgT1j92YE1K7XUKefBPLMiPXq7e5Lrmpp8NWa"
+  @moduledoc """
+  Bitindex Api V3.
+  """
 
-  plug Tesla.Middleware.BaseUrl, "https://api.bitindex.network/api/v2"
+  @api_key Application.get_env(:sv_api, :bitindex_api_key)
+
+  plug Tesla.Middleware.BaseUrl, "https://api.bitindex.network/api/v3/main"
   plug Tesla.Middleware.Headers, [{:api_key, @api_key}]
   plug Tesla.Middleware.JSON
 
 
   def utxos(addr) do
-    case get("addrs/utxos?address=#{addr}") do
+    case get("/addr/#{addr}/utxo") do
       {:ok, resp} ->
-        {:ok, Map.get(resp.body, "data")}
+        {:ok, resp.body}
       {:error, msg} ->
         {:error, msg}
     end
   end
 
   def broadcast(tx) do
-    case post("/tx/send", %{hex: tx}) do
+    case post("/tx/send", %{rawtx: tx}) do
       {:ok, resp} ->
-        msg = case Map.get(resp.body, "message") do
+        case Map.get(resp.body, "message") do
           nil ->
-            Map.get(resp.body, "txid")
+            txid = Map.get(resp.body, "txid")
+            {:ok, txid}
           other ->
-            other
+            {:error, other["message"]}
         end
-        {:ok, msg}
+      {:error, msg} ->
+        {:error, msg}
+    end
+  end
+
+  def transaction(txid) do
+    case get("/rawtx/#{txid}") do
+      {:ok, resp} ->
+        if Map.has_key?(resp.body, "errors") do
+          {:error, resp.body}
+        else
+          {:ok, resp.body["rawtx"]}
+        end
       {:error, msg} ->
         {:error, msg}
     end

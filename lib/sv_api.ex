@@ -4,7 +4,7 @@ defmodule SvApi do
   """
   alias SvApi.Bitindex
 
-  @mods [Bitindex]
+  @mods Application.get_env(:sv_api, :mods) |> IO.inspect()
 
 
   def utxos(addr) do
@@ -13,6 +13,10 @@ defmodule SvApi do
 
   def broadcast(tx) do
     many_tasks_one_response(:broadcast, [tx])
+  end
+
+  def transaction(txid) do
+    many_tasks_one_response(:transaction, [txid])
   end
 
   def many_tasks_one_response(function, args) do
