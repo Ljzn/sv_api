@@ -23,7 +23,7 @@ defmodule SvApi do
     pid = self()
     tasks = for mod <- @mods do
       spawn(fn ->
-        resp = apply(mod, function, [args])
+        resp = apply(mod, function, args)
         send pid, {:resp, resp}
       end)
     end
