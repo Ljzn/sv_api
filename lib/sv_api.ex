@@ -6,17 +6,19 @@ defmodule SvApi do
 
   @mods Application.get_env(:sv_api, :mods)
 
+  @nets ["main", "stn", "test"]
 
-  def utxos(addr) do
-    many_tasks_one_response(:utxos, [addr])
+
+  def utxos(addr, net \\ "main") when net in @nets do
+    many_tasks_one_response(:utxos, [addr, net])
   end
 
-  def broadcast(tx) do
-    many_tasks_one_response(:broadcast, [tx])
+  def broadcast(tx, net \\ "main") when net in @nets  do
+    many_tasks_one_response(:broadcast, [tx, net])
   end
 
-  def transaction(txid) do
-    many_tasks_one_response(:transaction, [txid])
+  def transaction(txid, net \\ "main") when net in @nets  do
+    many_tasks_one_response(:transaction, [txid, net])
   end
 
   def many_tasks_one_response(function, args) do

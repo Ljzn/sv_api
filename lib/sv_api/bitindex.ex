@@ -7,13 +7,14 @@ defmodule SvApi.Bitindex do
 
   @api_key Application.get_env(:sv_api, :bitindex_api_key)
 
-  plug Tesla.Middleware.BaseUrl, "https://api.bitindex.network/api/v3/main"
+  plug Tesla.Middleware.BaseUrl, "https://api.bitindex.network/api/v3/"
   plug Tesla.Middleware.Headers, [{:api_key, @api_key}]
   plug Tesla.Middleware.JSON
 
 
-  def utxos(addr) do
-    case get("/addr/#{addr}/utxo") do
+  def utxos(addr, net) do
+    url = net <> "/addr/#{addr}/utxo"
+    case get(url) do
       {:ok, resp} ->
         {:ok, resp.body}
       {:error, msg} ->
@@ -21,8 +22,9 @@ defmodule SvApi.Bitindex do
     end
   end
 
-  def broadcast(tx) do
-    case post("/tx/send", %{rawtx: tx}) do
+  def broadcast(tx, net) do
+    url = net <> "/tx/send"
+    case post(url, %{rawtx: tx}) do
       {:ok, resp} ->
         case Map.get(resp.body, "message") do
           nil ->
@@ -36,8 +38,9 @@ defmodule SvApi.Bitindex do
     end
   end
 
-  def transaction(txid) do
-    case get("/rawtx/#{txid}") do
+  def transaction(txid, net) do
+    url = net <> "/rawtx/#{txid}"
+    case get(url) do
       {:ok, resp} ->
         if Map.has_key?(resp.body, "errors") do
           {:error, resp.body}
