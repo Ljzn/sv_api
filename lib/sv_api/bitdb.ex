@@ -30,4 +30,14 @@ defmodule SvApi.Bitdb do
     end
   end
 
+  def query(q) do
+    query = q |> Base.encode64()
+    case get(query) do
+      {:ok, resp} ->
+        {:ok, resp.body}
+      {:error, msg} ->
+        {:error, msg}
+    end
+  end
+
 end
